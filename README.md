@@ -1,2 +1,2 @@
-# kinikart-js
+# kinicart-js
 Javascript components for Kinikart
