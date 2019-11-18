@@ -114,8 +114,6 @@ export default class KcCheckout extends HTMLElement {
     }
 
     private processOrder() {
-        this.checkoutWidget.style.display = 'none';
-        this.processingOrder.style.display = 'flex';
         let selectedPayment = null;
         const payments = document.getElementsByName('paymentselected');
         payments.forEach((input: any) => {
@@ -124,7 +122,9 @@ export default class KcCheckout extends HTMLElement {
             }
         });
 
-        if (selectedPayment) {
+        if (selectedPayment && selectedPayment !== 'new') {
+            this.checkoutWidget.style.display = 'none';
+            this.processingOrder.style.display = 'flex';
             const api = new Api();
             api.processOrder(this.billingContactId, selectedPayment)
                 .then(res => {
@@ -136,7 +136,7 @@ export default class KcCheckout extends HTMLElement {
                     // console.log(err);
                 })
         } else {
-            alert('Please select a payment method');
+            alert('Please add/select a payment method');
         }
     }
 

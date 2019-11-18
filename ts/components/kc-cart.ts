@@ -13,12 +13,14 @@ export default class KcCart extends HTMLElement {
     private bind() {
 
         const view = kinibind.bind(this, {
-            cart: {}
+            cart: {},
+            cartItems: null
         });
 
         const api = new Api();
         api.getCart().then(cart => {
             view.models.cart = cart;
+            view.models.cartItems = cart.items.length;
         });
     }
 

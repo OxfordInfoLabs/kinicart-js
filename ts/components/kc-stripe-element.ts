@@ -5,6 +5,8 @@ declare var window: any;
 
 export default class KcStripeElement extends HTMLElement {
 
+    private loadingElement: HTMLElement;
+
     constructor() {
         super();
 
@@ -13,7 +15,8 @@ export default class KcStripeElement extends HTMLElement {
 
 
     private bind() {
-
+        this.loadingElement = document.getElementById("loading-payment");
+        this.loading(false);
         this.style.display = 'block';
 
         const api = new Api();
@@ -99,6 +102,7 @@ export default class KcStripeElement extends HTMLElement {
             return false;
         }
 
+        this.loading(true);
         stripe.handleCardSetup(clientSecret, cardElement, {
             payment_method_data: {
                 billing_details: {
@@ -115,6 +119,7 @@ export default class KcStripeElement extends HTMLElement {
                         document.dispatchEvent(event);
                         cardElement.clear();
                         cardholder.value = '';
+                        this.loading(false);
                     });
             } else if (res.error && res.error.message) {
                 this.handleError(res.error.message);
@@ -134,6 +139,13 @@ export default class KcStripeElement extends HTMLElement {
             errorElement.style.color = 'red';
             errorElement.id = 'card-error';
             this.appendChild(errorElement);
+        }
+    }
+
+    private loading(show) {
+        if (this.loadingElement) {
+            this.loadingElement.style.display = show ? 'flex': 'none';
+            this.style.display = show ? 'none': 'block';
         }
     }
 }
