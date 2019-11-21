@@ -17,10 +17,15 @@ export default class KcPackagedProduct extends HTMLElement {
         const view = kinibind.bind(this, {
             plans: {},
             fields: {},
-            error: ''
+            error: '',
+            cart: {}
         });
 
         const api = new Api();
+        api.getCart().then(cart => {
+            view.models.cart = cart;
+        });
+
         api.getPackageProductPlans(productIdentifier).then(res => {
             view.models.plans = res;
 
