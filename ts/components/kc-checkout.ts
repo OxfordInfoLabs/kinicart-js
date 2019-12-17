@@ -1,6 +1,8 @@
 import * as kinibind from '../../node_modules/kinibind/dist/kinibind';
 import Api from '../framework/api';
 
+declare var window: any;
+
 export default class KcCheckout extends HTMLElement {
 
     private loadingElement: HTMLElement;
@@ -84,10 +86,6 @@ export default class KcCheckout extends HTMLElement {
                 }
 
                 input.addEventListener('change', function () {
-                    // Disable the pace order buttons while we're adding a new payment method
-                    Array.from(placeOrders).forEach((element: any) => {
-                        element.disabled = this.value === 'new';
-                    });
                     if (this.value === 'new') {
                         document.getElementById('stripe-element').style.display = 'block';
                     } else {
@@ -103,17 +101,12 @@ export default class KcCheckout extends HTMLElement {
             this.checkoutWidget.style.display = 'block';
 
             Array.from(placeOrders).forEach((element: any) => {
-                element.addEventListener('click', this.processOrder.bind(this));
+                element.addEventListener('click', this.processPaymentMethod.bind(this));
             });
-
-            document.addEventListener('paymentMethods', (event: any) => {
-                const paymentId = event.detail.paymentId;
-                this.loadPaymentMethods(api, view, paymentId);
-            });
-        })
+        });
     }
 
-    private processOrder() {
+    private processPaymentMethod() {
         let selectedPayment = null;
         const payments = document.getElementsByName('paymentselected');
         payments.forEach((input: any) => {
@@ -122,22 +115,35 @@ export default class KcCheckout extends HTMLElement {
             }
         });
 
-        if (selectedPayment && selectedPayment !== 'new') {
-            this.checkoutWidget.style.display = 'none';
-            this.processingOrder.style.display = 'flex';
-            const api = new Api();
-            api.processOrder(this.billingContactId, selectedPayment)
-                .then(res => {
-                    window.location.href = '/order-confirmation?orderId=' + res;
-                    // console.log(res);
-                })
-                .catch(err => {
-                    window.location.href = '/checkout';
-                    // console.log(err);
-                })
+        if (selectedPayment) {
+            if (selectedPayment === 'new') {
+                window.addPaymentMethod().then(res => {
+                    if (!res.error) {
+                        this.processOrder(res.method.id);
+                    }
+                }).catch(err => {
+                });
+            } else {
+                this.processOrder(selectedPayment);
+            }
         } else {
             alert('Please add/select a payment method');
         }
+    }
+
+    private processOrder(paymentMethod) {
+        this.checkoutWidget.style.display = 'none';
+        this.processingOrder.style.display = 'flex';
+        const api = new Api();
+        api.processOrder(this.billingContactId, paymentMethod)
+            .then(res => {
+                window.location.href = '/order-confirmation?orderId=' + res;
+                // console.log(res);
+            })
+            .catch(err => {
+                window.location.href = '/checkout';
+                // console.log(err);
+            })
     }
 
 }

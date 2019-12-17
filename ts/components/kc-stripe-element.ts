@@ -7,6 +7,11 @@ export default class KcStripeElement extends HTMLElement {
 
     private loadingElement: HTMLElement;
 
+    private stripe;
+    private clientSecret;
+    private stripeCardElement;
+
+
     constructor() {
         super();
 
@@ -15,7 +20,7 @@ export default class KcStripeElement extends HTMLElement {
 
 
     private bind() {
-        this.loadingElement = document.getElementById("loading-payment");
+        this.loadingElement = document.getElementById('loading-payment');
         this.loading(false);
         this.style.display = 'block';
 
@@ -78,53 +83,66 @@ export default class KcStripeElement extends HTMLElement {
         stripeCardElement.mount('#card-element');
 
         const defaultCheckbox: HTMLDivElement = document.createElement('div');
-        defaultCheckbox.className = "mt050";
+        defaultCheckbox.className = 'mt050';
         defaultCheckbox.innerHTML = '<label><input type=\'checkbox\' id=\'default-card\' checked=\'checked\'/>Make Default</label>';
 
         this.appendChild(defaultCheckbox);
 
-        const submitButton: HTMLButtonElement = document.createElement('button');
-        submitButton.id = 'add-stripe-card';
-        submitButton.textContent = 'Add Payment Method';
-        submitButton.className = 'but butsoftwh butsm';
-        submitButton.style.marginLeft = '0';
-        submitButton.style.marginTop = '.5rem';
-        submitButton.onclick = this.addPaymentMethod.bind(this, stripe, clientSecret, stripeCardElement);
-        this.appendChild(submitButton);
+        this.stripe = stripe;
+        this.clientSecret = clientSecret;
+        this.stripeCardElement = stripeCardElement;
+
+        window.addPaymentMethod = this.addPaymentMethod.bind(this);
+
+        // const submitButton: HTMLButtonElement = document.createElement('button');
+        // submitButton.id = 'add-stripe-card';
+        // submitButton.textContent = 'Add Payment Method';
+        // submitButton.className = 'but butsoftwh butsm';
+        // submitButton.style.marginLeft = '0';
+        // submitButton.style.marginTop = '.5rem';
+        // submitButton.onclick = this.addPaymentMethod.bind(this, stripe, clientSecret, stripeCardElement);
+        // this.appendChild(submitButton);
     }
 
-    private addPaymentMethod(stripe, clientSecret, cardElement) {
-        this.handleError();
-        const cardholder: any = document.getElementById('cardholder-input');
+    public addPaymentMethod() {
+        return new Promise((resolve, reject) => {
+            this.handleError();
+            const cardholder: any = document.getElementById('cardholder-input');
 
-        if (!cardholder.value) {
-            this.handleError('Please enter the cardholder name');
-            return false;
-        }
+            if (!cardholder.value) {
+                this.handleError('Please enter the cardholder name');
+                reject({ error: 'Please enter the cardholder name' });
+                return false;
+            }
 
-        this.loading(true);
-        stripe.handleCardSetup(clientSecret, cardElement, {
-            payment_method_data: {
-                billing_details: {
-                    name: cardholder.value
+            this.loading(true);
+            return this.stripe.handleCardSetup(this.clientSecret, this.stripeCardElement, {
+                payment_method_data: {
+                    billing_details: {
+                        name: cardholder.value
+                    }
                 }
-            }
-        }).then(res => {
-            if (res.setupIntent) {
-                const defaultCard: any = document.getElementById("default-card");
-                const api = new Api();
-                api.addPaymentMethod(res.setupIntent.payment_method, defaultCard.checked)
-                    .then(method => {
-                        const event = new CustomEvent("paymentMethods", {detail: {paymentId: method.payment.id}});
-                        document.dispatchEvent(event);
-                        cardElement.clear();
-                        cardholder.value = '';
-                        this.loading(false);
-                    });
-            } else if (res.error && res.error.message) {
-                this.handleError(res.error.message);
-            }
-        })
+            }).then(res => {
+                if (res.setupIntent) {
+                    const defaultCard: any = document.getElementById('default-card');
+                    const api = new Api();
+                    return api.addPaymentMethod(res.setupIntent.payment_method, defaultCard.checked)
+                        .then(method => {
+                            const event = new CustomEvent('paymentMethods', { detail: { paymentId: method.payment.id } });
+                            document.dispatchEvent(event);
+                            this.stripeCardElement.clear();
+                            cardholder.value = '';
+                            this.loading(false);
+                            resolve({ method: method });
+                        });
+                } else if (res.error && res.error.message) {
+                    this.loading(false);
+                    this.handleError(res.error.message);
+                    reject({ error: res.error.message });
+                }
+            })
+
+        });
 
     }
 
@@ -144,8 +162,8 @@ export default class KcStripeElement extends HTMLElement {
 
     private loading(show) {
         if (this.loadingElement) {
-            this.loadingElement.style.display = show ? 'flex': 'none';
-            this.style.display = show ? 'none': 'block';
+            this.loadingElement.style.display = show ? 'flex' : 'none';
+            this.style.display = show ? 'none' : 'block';
         }
     }
 }
