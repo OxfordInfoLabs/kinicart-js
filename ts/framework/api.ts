@@ -16,6 +16,10 @@ export default class Api {
         }, 'POST');
     }
 
+    public removeCartItem(index) {
+        return this.callAPI('/guest/cart/remove?index=' + index);
+    }
+
     public getCart() {
         return this.callAPI('/guest/cart');
     }
