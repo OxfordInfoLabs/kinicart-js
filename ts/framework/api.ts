@@ -10,10 +10,13 @@ export default class Api {
 
     }
 
-    public addProductToCart(productIdentifier, plan) {
-        return this.callAPI('/guest/packagedproduct/cartitem/' + productIdentifier, {
-            planIdentifier: plan
-        }, 'POST');
+    public getPackageProductPlan(productIdentifier, planIdentifier) {
+        return this.callAPI(`/guest/packagedproduct/plans/${productIdentifier}/${planIdentifier}`);
+    }
+
+
+    public addProductToCart(productIdentifier, packagedProductCartItemDescriptor, cartItemIndex) {
+        return this.callAPI('/guest/packagedproduct/cartitem/' + productIdentifier + (cartItemIndex !== null ? "?cartItemIndex=" + cartItemIndex : ""), packagedProductCartItemDescriptor, 'POST', true);
     }
 
     public removeCartItem(index) {
@@ -42,7 +45,7 @@ export default class Api {
 
     public addPaymentMethod(paymentMethod, defaultMethod = true) {
         return this.callAPI(`/account/payment/saveMethod?defaultMethod=${defaultMethod}&provider=stripe`,
-            { paymentMethod }, 'POST');
+            {paymentMethod}, 'POST');
     }
 
     public processOrder(contactId, paymentMethodId) {
@@ -69,8 +72,9 @@ export default class Api {
      * @param url
      * @param params
      * @param method
+     * @param rawResponse
      */
-    private callAPI(url: string, params: any = {}, method: string = 'GET') {
+    private callAPI(url: string, params: any = {}, method: string = 'GET', rawResponse: boolean = false) {
 
 
         url = Configuration.endpoint + url;
@@ -84,7 +88,10 @@ export default class Api {
             obj.body = JSON.stringify(params);
         }
 
-        return fetch(url, obj)
+
+        if (rawResponse)
+            return fetch(url, obj);
+        else return fetch(url, obj)
             .then((response) => {
                 if (response.ok) {
                     return response.text().then(function (text) {

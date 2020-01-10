@@ -1,6 +1,7 @@
 import * as kinibind from '../../node_modules/kinibind/dist/kinibind';
 import Api from '../framework/api';
 import RequestParams from '../../../kiniauth-js/ts/util/request-params';
+import Kiniauth from "../../../kiniauth-js/ts/index";
 
 export default class KcOrder extends HTMLElement {
 
@@ -13,7 +14,7 @@ export default class KcOrder extends HTMLElement {
 
     private bind() {
 
-        const view = kinibind.bind(this, {
+        const view = Kiniauth.kinibind.bind(this, {
             order: {},
             currency: ''
         });
