@@ -1,4 +1,3 @@
-import * as kinibind from '../../node_modules/kinibind/dist/kinibind';
 import Api from '../framework/api';
 
 declare var window: any;

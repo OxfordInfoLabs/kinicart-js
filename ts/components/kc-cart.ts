@@ -1,5 +1,6 @@
 import Api from '../framework/api';
-import Kiniauth from '../../../kiniauth-js/ts/index';
+import Kinivue from "kiniauth/ts/framework/kinivue";
+
 
 export default class KcCart extends HTMLElement {
 
@@ -11,9 +12,12 @@ export default class KcCart extends HTMLElement {
 
 
     private bind() {
-        const view = Kiniauth.kinibind.bind(this, {
-            cart: {},
-            cartItems: null
+        const view = new Kinivue({
+            el: this.querySelector(".vue-wrapper"),
+            data: {
+                cart: {},
+                cartItems: null
+            }
         });
 
         this.loadCart(view);
@@ -22,8 +26,8 @@ export default class KcCart extends HTMLElement {
     private loadCart(view) {
         const api = new Api();
         api.getCart().then(cart => {
-            view.models.cart = cart;
-            view.models.cartItems = cart.items.length;
+            view.$data.cart = cart;
+            view.$data.cartItems = cart.items.length;
             const deleteButtons = document.getElementsByClassName('delete');
             Array.from(deleteButtons).forEach((element: any, index) => {
                 element.addEventListener('click', (event) => {

@@ -1,7 +1,8 @@
 /**
  * Initialiser for kinicart
  */
-import Kiniauth from '../../kiniauth-js/ts/index';
+// @ts-ignore
+import Kiniauth from 'kiniauth/ts/index';
 import KcPackagedProduct from './components/kc-packaged-product';
 import KcCart from './components/kc-cart';
 import KcCheckout from './components/kc-checkout';

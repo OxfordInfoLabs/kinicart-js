@@ -1,6 +1,6 @@
 import Api from '../framework/api';
-import Kiniauth from "../../../kiniauth-js/ts/index";
-import Configuration from "../../../kiniauth-js/ts/configuration";
+import Configuration from "kiniauth/ts/configuration";
+import Kinivue from "kiniauth/ts/framework/kinivue";
 
 export default class KcPackagedProduct extends HTMLElement {
 
@@ -14,14 +14,17 @@ export default class KcPackagedProduct extends HTMLElement {
     private bind() {
 
         const productIdentifier = this.getAttribute('data-product-identifier');
-        const view = Kiniauth.kinibind.bind(this, {
-            plans: {},
+        const view = new Kinivue({
+            el: this.querySelector(".vue-wrapper"),
+            data: {
+                plans: {}
+            }
         });
 
         let api = new Api();
 
         api.getPackageProductPlans(productIdentifier).then(res => {
-            view.models.plans = res;
+            view.$data.plans = res;
         });
 
 

@@ -1,8 +1,8 @@
-import Kiniauth from "../../../kiniauth-js/ts/index";
 import Api from "../framework/api";
-import RequestParams from "../../../kiniauth-js/ts/util/request-params";
-import Configuration from "../../../kiniauth-js/ts/configuration";
-import StandardForm from "../../../kiniauth-js/ts/components/standard-form";
+import RequestParams from "kiniauth/ts/util/request-params";
+import Configuration from "kiniauth/ts/configuration";
+import StandardForm from "kiniauth/ts/components/standard-form";
+import Kinivue from "kiniauth/ts/framework/kinivue";
 
 /**
  * Product builder for generic packaged products
@@ -34,11 +34,13 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
         this.productIdentifier = this.getAttribute('data-product-identifier');
 
-        this.model = Kiniauth.kinibind.bind(this, {
-            plan: {},
-            addOns: [],
-            packageTotal: 0.00,
-            update: null
+        this.model = new Kinivue({
+            el: this.querySelector(".vue-wrapper"),
+            data: {
+                plan: {},
+                packageTotal: 0.00,
+                addOns: []
+            }
         });
 
 
@@ -64,7 +66,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
         // If we are in the default plan based configuration state call the get package product plan logic.
         if (RequestParams.get().plan) {
 
-            this.model.models.update = 0;
+            this.model.$data.update = 0;
 
             api.getPackageProductPlan(this.productIdentifier, RequestParams.get().plan).then(plan => {
 
@@ -73,7 +75,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
         } else if (RequestParams.get().cartItem) {
 
             this.cartItemIndex = RequestParams.get().cartItem;
-            this.model.models.update = 1;
+            this.model.$data.update = 1;
 
             // Get the cart first.
             api.getCart().then(cart => {
@@ -106,7 +108,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
     private initialiseBuilder(plan, cartItem) {
 
         // Add the plan to the models.
-        this.model.models.plan = plan;
+        this.model.$data.plan = plan;
 
         if (plan.relatedAddOns) {
             let addOns = [];
@@ -130,15 +132,16 @@ export default class KcPackagedProductBuilder extends StandardForm {
                 })
             });
 
-            this.model.models.addOns = addOns;
+            this.model.$data.addOns = addOns;
         }
 
 
-        this.querySelectorAll("[data-add-on-index]").forEach((item) => {
+        this.addEventListener("click", (event) => {
 
-            item.addEventListener("click", (event) => {
+            let source = <HTMLElement>(event.target);
 
-                let target = <HTMLElement>(event.currentTarget);
+            let target = null;
+            if (target = this.getNearestTargetWithAttribute(source, "data-add-on-index")) {
 
                 let addOnIndex = target.getAttribute("data-add-on-index");
                 if (target.hasAttribute("data-quantity-plus")) {
@@ -150,18 +153,12 @@ export default class KcPackagedProductBuilder extends StandardForm {
                 } else if (target.hasAttribute('data-select')) {
                     this.changeAddOnQuantity(addOnIndex, null, 1);
                 }
-            });
-        });
+            } else if (target = this.getNearestTargetWithAttribute(source, "data-add-to-cart")) {
 
-
-        // Submit the form when clicking
-        const addCartElements = document.querySelectorAll('[data-add-to-cart]');
-        addCartElements.forEach(addElement => {
-            addElement.addEventListener("click", (event) => {
-                this.successUrl = (<HTMLElement>event.target).hasAttribute("data-destination") ?
-                    (<HTMLElement>event.target).getAttribute("data-destination") : "/cart/";
+                this.successUrl = target.hasAttribute("data-destination") ?
+                    target.getAttribute("data-destination") : "/cart/";
                 this.getElementsByTagName("form").item(0).dispatchEvent(new Event("submit"));
-            });
+            }
         });
 
 
@@ -171,10 +168,20 @@ export default class KcPackagedProductBuilder extends StandardForm {
     }
 
 
+    private getNearestTargetWithAttribute(target, attribute) {
+
+        while (!target.hasAttribute(attribute) && target.tagName.toLowerCase() != "body") {
+            target = target.parentElement;
+        }
+
+        return target.hasAttribute(attribute) ? target : null;
+    }
+
+
     // Change the add on quantity
     private changeAddOnQuantity(addOnIndex, adjustment, quantity) {
 
-        let addOn = this.model.models.addOns[addOnIndex];
+        let addOn = this.model.$data.addOns[addOnIndex];
         let addOnQuantity = addOn.quantity;
 
         if (adjustment)
@@ -195,11 +202,11 @@ export default class KcPackagedProductBuilder extends StandardForm {
     // Recalculate the package total
     private recalculatePackageTotal() {
 
-        let packageTotal = this.model.models.plan.activePrices.MONTHLY;
+        let packageTotal = this.model.$data.plan.activePrices.MONTHLY;
 
-        this.model.models.plan.total = this.model.models.plan.activePrices.MONTHLY.toFixed(2);
+        this.model.$data.plan.total = this.model.$data.plan.activePrices.MONTHLY.toFixed(2);
 
-        this.model.models.addOns.forEach((item) => {
+        this.model.$data.addOns.forEach((item) => {
             if (item.quantity > 0) {
                 let total = item.quantity * item.item.activePrices.MONTHLY;
                 item.total = total.toFixed(2);
@@ -210,7 +217,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
 
         // Calculate package total
-        this.model.models.packageTotal = packageTotal.toFixed(2);
+        this.model.$data.packageTotal = packageTotal.toFixed(2);
 
     }
 
@@ -221,8 +228,8 @@ export default class KcPackagedProductBuilder extends StandardForm {
         const api = new Api();
 
 
-        let plan = this.model.models.plan;
-        let addOns = this.model.models.addOns;
+        let plan = this.model.$data.plan;
+        let addOns = this.model.$data.addOns;
 
         let addOnDescriptors = [];
         addOns.forEach((addOn) => {

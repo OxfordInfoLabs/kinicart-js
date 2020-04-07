@@ -1,4 +1,5 @@
-import Configuration from '../../../kiniauth-js/ts/configuration';
+// @ts-ignore
+import Configuration from 'kiniauth/ts/configuration';
 
 /**
  * API methods for accessing backend via fetch

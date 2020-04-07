@@ -1,7 +1,6 @@
-import * as kinibind from '../../node_modules/kinibind/dist/kinibind';
 import Api from '../framework/api';
-import RequestParams from '../../../kiniauth-js/ts/util/request-params';
-import Kiniauth from "../../../kiniauth-js/ts/index";
+import RequestParams from 'kiniauth/ts/util/request-params';
+import Kinivue from "kiniauth/ts/framework/kinivue";
 
 export default class KcOrder extends HTMLElement {
 
@@ -14,9 +13,12 @@ export default class KcOrder extends HTMLElement {
 
     private bind() {
 
-        const view = Kiniauth.kinibind.bind(this, {
-            order: {},
-            currency: ''
+        const view = new Kinivue({
+            el: this.querySelector(".vue-wrapper"),
+            data: {
+                order: {},
+                currency: ''
+            }
         });
 
         const api = new Api();
@@ -24,16 +26,16 @@ export default class KcOrder extends HTMLElement {
         const orderId = RequestParams.get().orderId;
 
         api.getOrder(orderId).then(order => {
-            view.models.order = order;
+            view.$data.order = order;
             switch (order.currency) {
                 case 'USD':
-                    view.models.currency = '$';
+                    view.$data.currency = '$';
                     break;
                 case 'GBP':
-                    view.models.currency = '£';
+                    view.$data.currency = '£';
                     break;
                 case 'EUR':
-                    view.models.currency = '€';
+                    view.$data.currency = '€';
                     break;
             }
         });

@@ -1,5 +1,6 @@
 import Api from '../framework/api';
-import Kiniauth from "../../../kiniauth-js/ts/index";
+// @ts-ignore
+import Kinivue from "kiniauth/ts/framework/kinivue";
 
 declare var window: any;
 
@@ -26,26 +27,29 @@ export default class KcCheckout extends HTMLElement {
 
     private bind() {
 
-        const view = Kiniauth.kinibind.bind(this, {
-            cart: {},
-            cartItems: 0,
-            billingURL: '/checkout',
-            billingContact: {},
-            paymentMethods: []
+        const view = new Kinivue({
+            el: this.querySelector(".vue-wrapper"),
+            data: {
+                cart: {},
+                cartItems: 0,
+                billingURL: '/checkout',
+                billingContact: {},
+                paymentMethods: []
+            }
         });
 
         const api = new Api();
         api.getCart().then(cart => {
-            view.models.cart = cart;
-            view.models.cartItems = cart.items.length
+            view.$data.cart = cart;
+            view.$data.cartItems = cart.items.length
         });
 
         api.getSessionData().then(session => {
             if (session.user || session.account) {
                 api.getBillingContact().then(contact => {
                     if (contact) {
-                        view.models.billingURL = '/billing?contact=' + contact.id;
-                        view.models.billingContact = contact;
+                        view.$data.billingURL = '/billing?contact=' + contact.id;
+                        view.$data.billingContact = contact;
                         this.billingContactId = contact.id;
                         this.loadPaymentMethods(api, view);
                     } else {
@@ -73,7 +77,7 @@ export default class KcCheckout extends HTMLElement {
                     }
                 });
             }
-            view.models.paymentMethods = paymentMethods;
+            view.$data.paymentMethods = paymentMethods;
 
             const placeOrders: any = document.getElementsByClassName('place-order');
             const payments = document.getElementsByName('paymentselected');
