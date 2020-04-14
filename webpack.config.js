@@ -40,7 +40,10 @@ module.exports = {
         modules: [
             ROOT,
             'node_modules'
-        ]
+        ],
+        alias: {
+            'vue$': 'vue/dist/vue.min.js'
+        }
     },
     mode: "production"
 };

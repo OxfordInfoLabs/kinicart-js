@@ -1,6 +1,6 @@
 {
   "name": "kinicart",
-  "version": "0.0.20",
+  "version": "0.0.24",
   "description": "Kinicart Web Components",
   "main": "dist/kinicart.js",
   "files": [
@@ -9,11 +9,11 @@
   ],
   "scripts": {
     "watch": "webpack --config webpack.config.js --watch",
-    "production-build": "webpack --config webpack.config.js -p",
     "sass": "node-sass -w sass --output dist",
-    "publish-package": "npm run production-build; bump patch; npm publish",
+    "publish:project": "npm run update:packages; npm run build:production; bump patch; npm publish",
+    "build:production": "webpack --config webpack.config.js -p --display-modules",
     "update:dev": "npm run update:packages && npm run update:symlinks",
-    "update:packages": "npm i; npm i -D kiniauth@latest",
+    "update:packages": "npm i; npm i kiniauth@latest",
     "update:symlinks": "npm link ../kiniauth-js"
   },
   "repository": {
@@ -30,7 +30,6 @@
     "@types/node": "^10.11.3",
     "@webcomponents/custom-elements": "^1.2.2",
     "concurrently": "^4.1.0",
-    "kiniauth": "0.0.14",
     "node-sass": "^4.11.0",
     "source-map-loader": "0.2.3",
     "ts-loader": "^5.3.3",
@@ -43,6 +42,7 @@
     "webpack-dev-server": "3.1.11"
   },
   "dependencies": {
+    "kiniauth": "0.0.16",
     "vue-class-component": "^7.2.3"
   }
 }

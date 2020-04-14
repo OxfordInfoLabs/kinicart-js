@@ -29,6 +29,7 @@ export default class Kinicart extends Kiniauth {
         customElements.define('kc-checkout', KcCheckout);
         customElements.define('kc-stripe-element', KcStripeElement);
         customElements.define('kc-order', KcOrder);
+
     }
 
 
