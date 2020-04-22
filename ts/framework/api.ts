@@ -1,4 +1,3 @@
-// @ts-ignore
 import Configuration from 'kiniauth/ts/configuration';
 
 /**

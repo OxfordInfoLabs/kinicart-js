@@ -17,6 +17,14 @@ export default class KcCart extends HTMLElement {
             data: {
                 cart: {},
                 cartItems: null
+            },
+            methods: {
+                removeCartItem: (index) => {
+                    const api = new Api();
+                    api.removeCartItem(index).then(() => {
+                        this.loadCart(view);
+                    });
+                }
             }
         });
 
@@ -28,14 +36,6 @@ export default class KcCart extends HTMLElement {
         api.getCart().then(cart => {
             view.$data.cart = cart;
             view.$data.cartItems = cart.items.length;
-            const deleteButtons = document.getElementsByClassName('delete');
-            Array.from(deleteButtons).forEach((element: any, index) => {
-                element.addEventListener('click', (event) => {
-                    api.removeCartItem(index).then(() => {
-                        this.loadCart(view);
-                    });
-                });
-            });
         });
     }
 
