@@ -4,15 +4,17 @@ import Kinivue from "kiniauth/ts/framework/kinivue";
 
 export default class KcCart extends HTMLElement {
 
+    // View
+    private view;
+
     constructor() {
         super();
-
         this.bind();
     }
 
 
     private bind() {
-        const view = new Kinivue({
+        this.view = new Kinivue({
             el: this.querySelector(".vue-wrapper"),
             data: {
                 cart: {},
@@ -22,20 +24,20 @@ export default class KcCart extends HTMLElement {
                 removeCartItem: (index) => {
                     const api = new Api();
                     api.removeCartItem(index).then(() => {
-                        this.loadCart(view);
+                        this.loadCart();
                     });
                 }
             }
         });
 
-        this.loadCart(view);
+        this.loadCart();
     }
 
-    private loadCart(view) {
+    private loadCart() {
         const api = new Api();
         api.getCart().then(cart => {
-            view.$data.cart = cart;
-            view.$data.cartItems = cart.items.length;
+            this.view.cart = cart;
+            this.view.cartItems = cart.items.length;
         });
     }
 
