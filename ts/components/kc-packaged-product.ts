@@ -1,6 +1,7 @@
 import Api from '../framework/api';
 import Configuration from "kiniauth/ts/configuration";
 import Kinivue from "kiniauth/ts/framework/kinivue";
+import KaSession from "kiniauth/ts/components/ka-session";
 
 export default class KcPackagedProduct extends HTMLElement {
 
@@ -17,9 +18,16 @@ export default class KcPackagedProduct extends HTMLElement {
         const view = new Kinivue({
             el: this.querySelector(".vue-wrapper"),
             data: {
-                plans: {}
+                plans: {},
+                identifier: '',
+                session: {}
             }
         });
+
+        KaSession.getSessionData().then(session => {
+            view.$data.session = session;
+        });
+
 
         let api = new Api();
 
