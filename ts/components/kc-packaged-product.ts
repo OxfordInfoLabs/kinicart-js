@@ -1,7 +1,7 @@
 import Api from '../framework/api';
 import Configuration from "kiniauth/ts/configuration";
-import Kinivue from "kiniauth/ts/framework/kinivue";
-import KaSession from "kiniauth/ts/components/ka-session";
+import Kinibind from "kiniauth/ts/framework/kinibind";
+
 
 export default class KcPackagedProduct extends HTMLElement {
 
@@ -15,24 +15,18 @@ export default class KcPackagedProduct extends HTMLElement {
     private bind() {
 
         const productIdentifier = this.getAttribute('data-product-identifier');
-        const view = new Kinivue({
-            el: this.querySelector(".vue-wrapper"),
-            data: {
+        const view = new Kinibind(
+            this,
+            {
                 plans: {},
-                identifier: '',
-                session: {}
-            }
-        });
-
-        KaSession.getSessionData().then(session => {
-            view.$data.session = session;
-        });
+                identifier: ''
+            });
 
 
         let api = new Api();
 
         api.getPackageProductPlans(productIdentifier).then(res => {
-            view.$data.plans = res;
+            view.setModelItem("plans", res);
         });
 
 

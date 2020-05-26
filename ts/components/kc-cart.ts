@@ -1,5 +1,5 @@
 import Api from '../framework/api';
-import Kinivue from "kiniauth/ts/framework/kinivue";
+import Kinibind from "kiniauth/ts/framework/kinibind";
 
 
 export default class KcCart extends HTMLElement {
@@ -14,21 +14,19 @@ export default class KcCart extends HTMLElement {
 
 
     private bind() {
-        this.view = new Kinivue({
-            el: this.querySelector(".vue-wrapper"),
-            data: {
+        this.view = new Kinibind(
+            this,
+            {
                 cart: {},
-                cartItems: null
-            },
-            methods: {
+                cartItems: null,
                 removeCartItem: (index) => {
                     const api = new Api();
                     api.removeCartItem(index).then(() => {
                         this.loadCart();
                     });
                 }
-            }
-        });
+
+            });
 
         this.loadCart();
     }
@@ -36,8 +34,8 @@ export default class KcCart extends HTMLElement {
     private loadCart() {
         const api = new Api();
         api.getCart().then(cart => {
-            this.view.cart = cart;
-            this.view.cartItems = cart.items.length;
+            this.view.setModelItem("cart", cart);
+            this.view.setModelItem("cartItems", cart.items.length);
         });
     }
 
