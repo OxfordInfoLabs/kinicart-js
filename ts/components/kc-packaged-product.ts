@@ -18,8 +18,7 @@ export default class KcPackagedProduct extends HTMLElement {
         const view = new Kinibind(
             this,
             {
-                plans: {},
-                identifier: ''
+                plans: {}
             });
 
 
