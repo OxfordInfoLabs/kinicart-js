@@ -74,7 +74,7 @@ export default class KcCheckout extends HTMLElement {
                     }
                 });
             }
-            view.$data.paymentMethods = paymentMethods;
+            view.setModelItem("paymentMethods", paymentMethods);
 
             const placeOrders: any = document.getElementsByClassName('place-order');
             const payments = document.getElementsByName('paymentselected');
