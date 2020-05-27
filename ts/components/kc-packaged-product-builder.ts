@@ -2,7 +2,8 @@ import Api from "../framework/api";
 import RequestParams from "kiniauth/ts/util/request-params";
 import Configuration from "kiniauth/ts/configuration";
 import StandardForm from "kiniauth/ts/components/standard-form";
-import Kinivue from "kiniauth/ts/framework/kinivue";
+import Kinibind from "kiniauth/ts/framework/kinibind";
+
 
 /**
  * Product builder for generic packaged products
@@ -11,7 +12,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
 
     // Kinibind model
-    private model: any;
+    private view: any;
 
     // Product identifier
     private productIdentifier: string;
@@ -34,14 +35,14 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
         this.productIdentifier = this.getAttribute('data-product-identifier');
 
-        this.model = new Kinivue({
-            el: this.querySelector(".vue-wrapper"),
-            data: {
+        this.view = new Kinibind(
+            this,
+            {
                 plan: {},
                 packageTotal: 0.00,
                 addOns: []
             }
-        });
+        );
 
 
         // Register fields
@@ -66,7 +67,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
         // If we are in the default plan based configuration state call the get package product plan logic.
         if (RequestParams.get().plan) {
 
-            this.model.$data.update = 0;
+            this.view.setModelValue("update", 0);
 
             api.getPackageProductPlan(this.productIdentifier, RequestParams.get().plan).then(plan => {
 
@@ -75,7 +76,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
         } else if (RequestParams.get().cartItem) {
 
             this.cartItemIndex = RequestParams.get().cartItem;
-            this.model.$data.update = 1;
+            this.view.setModelValue("update", 1);
 
             // Get the cart first.
             api.getCart().then(cart => {
@@ -108,7 +109,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
     private initialiseBuilder(plan, cartItem) {
 
         // Add the plan to the models.
-        this.model.$data.plan = plan;
+        this.view.setModelValue("plan", plan);
 
         if (plan.relatedAddOns) {
             let addOns = [];
@@ -132,7 +133,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
                 })
             });
 
-            this.model.$data.addOns = addOns;
+            this.view.setModelValue("addOns", addOns);
         }
 
 
@@ -181,7 +182,9 @@ export default class KcPackagedProductBuilder extends StandardForm {
     // Change the add on quantity
     private changeAddOnQuantity(addOnIndex, adjustment, quantity) {
 
-        let addOn = this.model.$data.addOns[addOnIndex];
+        let addOns = this.view.getModelItem("addOns");
+
+        let addOn = addOns[addOnIndex];
         let addOnQuantity = addOn.quantity;
 
         if (adjustment)
@@ -202,11 +205,15 @@ export default class KcPackagedProductBuilder extends StandardForm {
     // Recalculate the package total
     private recalculatePackageTotal() {
 
-        let packageTotal = this.model.$data.plan.activePrices.MONTHLY;
+        let plan = this.view.getModelItem("plan");
+        let addOns = this.view.getModelItem("addOns");
 
-        this.model.$data.plan.total = this.model.$data.plan.activePrices.MONTHLY.toFixed(2);
 
-        this.model.$data.addOns.forEach((item) => {
+        let packageTotal = plan.activePrices.MONTHLY;
+
+        plan.total = plan.activePrices.MONTHLY.toFixed(2);
+
+        addOns.forEach((item) => {
             if (item.quantity > 0) {
                 let total = item.quantity * item.item.activePrices.MONTHLY;
                 item.total = total.toFixed(2);
@@ -217,7 +224,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
 
         // Calculate package total
-        this.model.$data.packageTotal = packageTotal.toFixed(2);
+        this.view.setModelItem("packageTotal", packageTotal.toFixed(2));
 
     }
 
@@ -228,8 +235,9 @@ export default class KcPackagedProductBuilder extends StandardForm {
         const api = new Api();
 
 
-        let plan = this.model.$data.plan;
-        let addOns = this.model.$data.addOns;
+        let plan = this.view.getModelItem("plan");
+        let addOns = this.view.getModelItem("addOns");
+
 
         let addOnDescriptors = [];
         addOns.forEach((addOn) => {

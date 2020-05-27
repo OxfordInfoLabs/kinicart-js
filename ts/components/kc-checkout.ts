@@ -1,6 +1,5 @@
 import Api from '../framework/api';
-// @ts-ignore
-import Kinivue from "kiniauth/ts/framework/kinivue";
+import Kinibind from "kiniauth/ts/framework/kinibind";
 
 declare var window: any;
 
@@ -27,29 +26,27 @@ export default class KcCheckout extends HTMLElement {
 
     private bind() {
 
-        const view = new Kinivue({
-            el: this.querySelector(".vue-wrapper"),
-            data: {
+        const view = new Kinibind(this,
+             {
                 cart: {},
                 cartItems: 0,
                 billingURL: '/checkout',
                 billingContact: {},
                 paymentMethods: []
-            }
-        });
+            });
 
         const api = new Api();
         api.getCart().then(cart => {
-            view.$data.cart = cart;
-            view.$data.cartItems = cart.items.length
+            view.setModelItem("cart",cart);
+            view.setModelItem("cartItems",  cart.items.length);
         });
 
         api.getSessionData().then(session => {
             if (session.user || session.account) {
                 api.getBillingContact().then(contact => {
                     if (contact) {
-                        view.$data.billingURL = '/billing?contact=' + contact.id;
-                        view.$data.billingContact = contact;
+                        view.setModelItem("billingURL",'/billing?contact=' + contact.id);
+                        view.setModelItem("billingContact",contact);
                         this.billingContactId = contact.id;
                         this.loadPaymentMethods(api, view);
                     } else {

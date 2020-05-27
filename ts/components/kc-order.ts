@@ -1,6 +1,7 @@
 import Api from '../framework/api';
 import RequestParams from 'kiniauth/ts/util/request-params';
-import Kinivue from "kiniauth/ts/framework/kinivue";
+import Kinibind from "kiniauth/ts/framework/kinibind";
+
 
 export default class KcOrder extends HTMLElement {
 
@@ -13,29 +14,28 @@ export default class KcOrder extends HTMLElement {
 
     private bind() {
 
-        const view = new Kinivue({
-            el: this.querySelector(".vue-wrapper"),
-            data: {
+        const view = new Kinibind(
+            this,
+            {
                 order: {},
                 currency: ''
-            }
-        });
+            });
 
         const api = new Api();
 
         const orderId = RequestParams.get().orderId;
 
         api.getOrder(orderId).then(order => {
-            view.$data.order = order;
+            view.setModelItem("order", order);
             switch (order.currency) {
                 case 'USD':
-                    view.$data.currency = '$';
+                    view.setModelItem("currency", '$');
                     break;
                 case 'GBP':
-                    view.$data.currency = '£';
+                    view.setModelItem("currency", '£');
                     break;
                 case 'EUR':
-                    view.$data.currency = '€';
+                    view.setModelItem("currency", '€');
                     break;
             }
         });
