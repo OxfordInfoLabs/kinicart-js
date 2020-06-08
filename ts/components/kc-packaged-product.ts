@@ -1,6 +1,6 @@
 import Api from '../framework/api';
 import Configuration from "kiniauth/ts/configuration";
-import Kinibind from "kiniauth/ts/framework/kinibind";
+import AuthKinibind from "kiniauth/ts/framework/auth-kinibind";
 
 
 export default class KcPackagedProduct extends HTMLElement {
@@ -15,7 +15,7 @@ export default class KcPackagedProduct extends HTMLElement {
     private bind() {
 
         const productIdentifier = this.getAttribute('data-product-identifier');
-        const view = new Kinibind(
+        const view = new AuthKinibind(
             this,
             {
                 plans: {}

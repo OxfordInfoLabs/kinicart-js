@@ -1,6 +1,6 @@
 import Api from '../framework/api';
 import RequestParams from 'kiniauth/ts/util/request-params';
-import Kinibind from "kiniauth/ts/framework/kinibind";
+import AuthKinibind from "kiniauth/ts/framework/auth-kinibind";
 
 
 export default class KcOrder extends HTMLElement {
@@ -14,7 +14,7 @@ export default class KcOrder extends HTMLElement {
 
     private bind() {
 
-        const view = new Kinibind(
+        const view = new AuthKinibind(
             this,
             {
                 order: {},

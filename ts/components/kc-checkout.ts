@@ -1,5 +1,5 @@
 import Api from '../framework/api';
-import Kinibind from "kiniauth/ts/framework/kinibind";
+import AuthKinibind from "kiniauth/ts/framework/auth-kinibind";
 
 declare var window: any;
 
@@ -26,7 +26,7 @@ export default class KcCheckout extends HTMLElement {
 
     private bind() {
 
-        const view = new Kinibind(this,
+        const view = new AuthKinibind(this,
              {
                 cart: {},
                 cartItems: 0,

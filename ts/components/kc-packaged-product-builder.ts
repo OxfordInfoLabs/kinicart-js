@@ -2,7 +2,7 @@ import Api from "../framework/api";
 import RequestParams from "kiniauth/ts/util/request-params";
 import Configuration from "kiniauth/ts/configuration";
 import StandardForm from "kiniauth/ts/components/standard-form";
-import Kinibind from "kiniauth/ts/framework/kinibind";
+import AuthKinibind from "kiniauth/ts/framework/auth-kinibind";
 
 
 /**
@@ -35,7 +35,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
         this.productIdentifier = this.getAttribute('data-product-identifier');
 
-        this.view = new Kinibind(
+        this.view = new AuthKinibind(
             this,
             {
                 plan: {},

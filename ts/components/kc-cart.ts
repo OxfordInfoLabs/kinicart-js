@@ -1,5 +1,5 @@
 import Api from '../framework/api';
-import Kinibind from "kiniauth/ts/framework/kinibind";
+import AuthKinibind from "kiniauth/ts/framework/auth-kinibind";
 
 
 export default class KcCart extends HTMLElement {
@@ -14,7 +14,7 @@ export default class KcCart extends HTMLElement {
 
 
     private bind() {
-        this.view = new Kinibind(
+        this.view = new AuthKinibind(
             this,
             {
                 cart: {},
