@@ -14,7 +14,7 @@
     "build:production": "webpack --config webpack.config.js -p --display-modules",
     "update:dev": "npm run update:packages && npm run update:symlinks",
     "update:packages": "npm i; npm i kiniauth@latest",
-    "update:symlinks": "npm link ../kiniauth-js"
+    "update:symlinks": "npm link ../kiniauth-js; npm link ../../kinibind"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,6 @@
     "webpack-dev-server": "3.1.11"
   },
   "dependencies": {
-    "kiniauth": "0.0.18",
-    "vue-class-component": "^7.2.3"
+    "kiniauth": "0.0.18"
   }
 }

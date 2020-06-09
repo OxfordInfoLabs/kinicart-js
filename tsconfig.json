@@ -4,10 +4,6 @@
     "module": "es6",
     "target": "es6",
     "allowJs": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true
-  },
-  "include": [
-    "node_modules/kiniauth/ts"
-  ]
+    "allowSyntheticDefaultImports": true
+  }
 }
