@@ -12,9 +12,10 @@
     "sass": "node-sass -w sass --output dist",
     "publish:project": "npm run update:packages; npm run build:production; bump patch; npm publish",
     "build:production": "webpack --config webpack.config.js -p --display-modules",
-    "update:dev": "npm run update:packages && npm run update:symlinks",
+    "update:dev": "npm run update:packages && npm run update:symlinks && npm run update:dependencies",
     "update:packages": "npm i; npm i kiniauth@latest",
-    "update:symlinks": "npm link ../kiniauth-js; npm link ../../kinibind"
+    "update:symlinks": "npm link ../kiniauth-js; npm link ../../kinibind",
+    "update:dependencies": "cd node_modules/kiniauth; npm run update:dev"
   },
   "repository": {
     "type": "git",
