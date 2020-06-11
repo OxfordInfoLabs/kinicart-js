@@ -26,16 +26,16 @@ export default class KcOrder extends HTMLElement {
         const orderId = RequestParams.get().orderId;
 
         api.getOrder(orderId).then(order => {
-            view.setModelItem("order", order);
+            view.model.order = order;
             switch (order.currency) {
                 case 'USD':
-                    view.setModelItem("currency", '$');
+                    view.model.currency = '$';
                     break;
                 case 'GBP':
-                    view.setModelItem("currency", '£');
+                    view.model.currency = '£';
                     break;
                 case 'EUR':
-                    view.setModelItem("currency", '€');
+                    view.model.currency = '€';
                     break;
             }
         });

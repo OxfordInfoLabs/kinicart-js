@@ -4,6 +4,8 @@
     "module": "es6",
     "target": "es6",
     "allowJs": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "preserveSymlinks": true
   }
 }

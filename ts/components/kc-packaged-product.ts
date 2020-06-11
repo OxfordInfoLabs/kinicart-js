@@ -25,7 +25,7 @@ export default class KcPackagedProduct extends HTMLElement {
         let api = new Api();
 
         api.getPackageProductPlans(productIdentifier).then(res => {
-            view.setModelItem("plans", res);
+            view.model.plans = res;
         });
 
 

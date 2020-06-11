@@ -182,7 +182,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
     // Change the add on quantity
     private changeAddOnQuantity(addOnIndex, adjustment, quantity) {
 
-        let addOns = this.view.getModelItem("addOns");
+        let addOns = this.view.model.addOns;
 
         let addOn = addOns[addOnIndex];
         let addOnQuantity = addOn.quantity;
@@ -205,8 +205,8 @@ export default class KcPackagedProductBuilder extends StandardForm {
     // Recalculate the package total
     private recalculatePackageTotal() {
 
-        let plan = this.view.getModelItem("plan");
-        let addOns = this.view.getModelItem("addOns");
+        let plan = this.view.model.plan;
+        let addOns = this.view.model.addOns;
 
 
         let packageTotal = plan.activePrices.MONTHLY;
@@ -224,7 +224,7 @@ export default class KcPackagedProductBuilder extends StandardForm {
 
 
         // Calculate package total
-        this.view.setModelItem("packageTotal", packageTotal.toFixed(2));
+        this.view.model.packageTotal = packageTotal.toFixed(2);
 
     }
 
@@ -235,8 +235,8 @@ export default class KcPackagedProductBuilder extends StandardForm {
         const api = new Api();
 
 
-        let plan = this.view.getModelItem("plan");
-        let addOns = this.view.getModelItem("addOns");
+        let plan = this.view.model.plan;
+        let addOns = this.view.model.addOns;
 
 
         let addOnDescriptors = [];

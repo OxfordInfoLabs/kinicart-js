@@ -35,8 +35,8 @@ export default class KcCart extends HTMLElement {
     private loadCart() {
         const api = new Api();
         api.getCart().then(cart => {
-            this.view.setModelItem("cart", cart);
-            this.view.setModelItem("cartItems", cart.items.length);
+            this.view.model.cart = cart;
+            this.view.model.cartItems = cart.items.length;
         });
     }
 

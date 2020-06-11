@@ -27,7 +27,7 @@ export default class KcCheckout extends HTMLElement {
     private bind() {
 
         const view = new AuthKinibind(this,
-             {
+            {
                 cart: {},
                 cartItems: 0,
                 billingURL: '/checkout',
@@ -37,16 +37,16 @@ export default class KcCheckout extends HTMLElement {
 
         const api = new Api();
         api.getCart().then(cart => {
-            view.setModelItem("cart",cart);
-            view.setModelItem("cartItems",  cart.items.length);
+            view.model.cart = cart;
+            view.model.cartItems = cart.items.length;
         });
 
         api.getSessionData().then(session => {
             if (session.user || session.account) {
                 api.getBillingContact().then(contact => {
                     if (contact) {
-                        view.setModelItem("billingURL",'/billing?contact=' + contact.id);
-                        view.setModelItem("billingContact",contact);
+                        view.model.billingURL = '/billing?contact=' + contact.id;
+                        view.model.billingContact = contact;
                         this.billingContactId = contact.id;
                         this.loadPaymentMethods(api, view);
                     } else {
@@ -74,7 +74,7 @@ export default class KcCheckout extends HTMLElement {
                     }
                 });
             }
-            view.setModelItem("paymentMethods", paymentMethods);
+            view.model.paymentMethods = paymentMethods;
 
             const placeOrders: any = document.getElementsByClassName('place-order');
             const payments = document.getElementsByName('paymentselected');
