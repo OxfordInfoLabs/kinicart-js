@@ -1,6 +1,6 @@
 {
   "name": "kinicart",
-  "version": "0.0.25",
+  "version": "0.0.29",
   "description": "Kinicart Web Components",
   "main": "dist/kinicart.js",
   "files": [
@@ -10,7 +10,7 @@
   "scripts": {
     "watch": "webpack --config webpack.config.js --watch",
     "sass": "node-sass -w sass --output dist",
-    "publish:project": "npm run update:packages; npm run build:production; bump patch; npm publish",
+    "publish:project": "npm run build:production; bump patch; npm publish",
     "build:production": "webpack --config webpack.config.js -p --display-modules",
     "update:dev": "npm run update:packages && npm run update:symlinks && npm run update:dependencies",
     "update:packages": "npm i; npm i kiniauth@latest",
@@ -38,11 +38,11 @@
     "uglify-template-string-loader": "^1.1.1",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "version-bump-prompt": "^5.0.1",
-    "webpack": "4.12.0",
-    "webpack-cli": "3.0.8",
-    "webpack-dev-server": "3.1.11"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "kiniauth": "0.0.19"
+    "kiniauth": "0.0.20"
   }
 }
