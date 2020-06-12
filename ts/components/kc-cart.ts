@@ -19,10 +19,10 @@ export default class KcCart extends HTMLElement {
             {
                 cart: {},
                 cartItems: null,
-                removeCartItem: (event, model) => {
+                removeCartItem: (index) => {
 
                     const api = new Api();
-                    api.removeCartItem(model.$index).then(() => {
+                    api.removeCartItem(index).then(() => {
                         this.loadCart();
                     });
                 }
