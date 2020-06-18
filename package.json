@@ -43,6 +43,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "kiniauth": "0.0.20"
+    "kiniauth": "0.0.21"
   }
 }
