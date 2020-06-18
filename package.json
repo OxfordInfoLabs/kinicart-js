@@ -1,6 +1,6 @@
 {
   "name": "kinicart",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "Kinicart Web Components",
   "main": "dist/kinicart.js",
   "files": [
@@ -30,8 +30,6 @@
   "devDependencies": {
     "@types/node": "^10.11.3",
     "@webcomponents/custom-elements": "^1.2.2",
-    "concurrently": "^4.1.0",
-    "node-sass": "^4.11.0",
     "source-map-loader": "0.2.3",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.1",
@@ -43,6 +41,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "kiniauth": "0.0.21"
+    "kiniauth": "0.0.22"
   }
 }
