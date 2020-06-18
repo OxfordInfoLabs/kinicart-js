@@ -1,6 +1,6 @@
 {
   "name": "kinicart",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "Kinicart Web Components",
   "main": "dist/kinicart.js",
   "files": [
@@ -43,6 +43,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "kiniauth": "0.0.20"
+    "kiniauth": "0.0.21"
   }
 }
