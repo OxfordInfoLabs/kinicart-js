@@ -1,5 +1,5 @@
 import Configuration from 'kiniauth/ts/configuration';
-import Session from "../../../kiniauth-js/ts/framework/session";
+import Session from "kiniauth/ts/framework/session";
 
 /**
  * API methods for accessing backend via fetch
