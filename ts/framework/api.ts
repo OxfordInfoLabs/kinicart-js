@@ -1,4 +1,5 @@
 import Configuration from 'kiniauth/ts/configuration';
+import Session from "../../../kiniauth-js/ts/framework/session";
 
 /**
  * API methods for accessing backend via fetch
@@ -76,22 +77,20 @@ export default class Api {
      */
     private callAPI(url: string, params: any = {}, method: string = 'GET', rawResponse: boolean = false) {
 
+        let csrf = url.includes("/account/");
 
-        url = Configuration.endpoint + url;
-
-        const obj: any = {
-            method: method,
-            credentials: 'include'
-        };
-
-        if (method != 'GET') {
-            obj.body = JSON.stringify(params);
+        let response;
+        if (csrf) {
+            response =  Session.getSessionData().then(session => {
+                return this.makeAPICall(url, params, method, session)
+            });
+        } else {
+            response = this.makeAPICall(url, params, method);
         }
 
-
         if (rawResponse)
-            return fetch(url, obj);
-        else return fetch(url, obj)
+            return response;
+        else return response
             .then((response) => {
                 if (response.ok) {
                     return response.text().then(function (text) {
@@ -106,5 +105,31 @@ export default class Api {
             });
 
     }
+
+
+
+    private makeAPICall(url: string, params: any = {}, method: string = 'GET', sessionData = null): Promise<Response> {
+        if (url.indexOf("http") < 0)
+            url = Configuration.endpoint + url;
+
+        var obj: any = {
+            method: method,
+            credentials: 'include'
+        };
+
+        if (sessionData) {
+            obj.headers = {
+                'X-CSRF-TOKEN': sessionData.csrfToken
+            };
+        }
+
+        if (method != 'GET') {
+            obj.body = JSON.stringify(params);
+        }
+
+        return fetch(url, obj);
+
+    }
+
 
 }
