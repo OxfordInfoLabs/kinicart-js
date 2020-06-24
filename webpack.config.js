@@ -40,7 +40,11 @@ module.exports = {
         modules: [
             ROOT,
             'node_modules'
-        ]
+        ],
+        alias: {
+            'kinibind': path.resolve(path.join(__dirname, 'node_modules', 'kinibind')),
+            'kiniauth': path.resolve(path.join(__dirname, 'node_modules', 'kiniauth'))
+        }
     },
     mode: "production"
 };
