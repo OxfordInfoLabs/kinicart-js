@@ -81,7 +81,7 @@ export default class Api {
 
         let response;
         if (csrf) {
-            response =  Session.getSessionData().then(session => {
+            response = Session.getSessionData().then(session => {
                 return this.makeAPICall(url, params, method, session)
             });
         } else {
@@ -107,7 +107,6 @@ export default class Api {
     }
 
 
-
     private makeAPICall(url: string, params: any = {}, method: string = 'GET', sessionData = null): Promise<Response> {
         if (url.indexOf("http") < 0)
             url = Configuration.endpoint + url;
@@ -126,6 +125,9 @@ export default class Api {
         if (method != 'GET') {
             obj.body = JSON.stringify(params);
         }
+
+        // Clear session data
+        Session.clearSessionData();
 
         return fetch(url, obj);
 
